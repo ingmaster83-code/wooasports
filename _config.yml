@@ -1,0 +1,26 @@
+title: 우아스포츠 - 전국 공공체육시설 정보
+description: 전국 7,977곳 공공체육시설(축구장·테니스장·수영장·체육관 등) 위치와 정보를 한눈에 확인하세요. 지역별·종목별로 내 주변 공공체육시설을 찾아보세요.
+url: "https://wooasports.wooahouse.com"
+baseurl: ""
+lang: ko
+timezone: Asia/Seoul
+author: WooaHouse
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - scripts/
+  - "*.py"
+  - README.md
+  - .gitignore
+  - vendor/
+  - _rawdata/

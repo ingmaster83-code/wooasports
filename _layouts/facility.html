@@ -1,0 +1,191 @@
+---
+layout: default
+---
+
+<nav class="breadcrumb">
+  <a href="/">홈</a>
+  <span>›</span>
+  <a href="/region/{{ page.regionSlug }}/">{{ page.region }}</a>
+  <span>›</span>
+  <a href="/type/{{ page.typeSlug }}/">{{ page.typeLabel }}</a>
+  <span>›</span>
+  <span>{{ page.facilityName }}</span>
+</nav>
+
+<div class="market-layout">
+<div class="market-page">
+
+  <div class="market-header">
+    <div class="market-header-top">
+      <div class="market-badges">
+        <span class="badge badge-region">{{ page.region }} {{ page.city }}</span>
+        <span class="badge badge-city">{{ page.typeIcon }} {{ page.typeLabel }}</span>
+        {% if page.isNational %}<span class="badge badge-today">🏛️ 국가시설</span>{% endif %}
+      </div>
+      <h1 class="market-name">{{ page.facilityName }}</h1>
+    </div>
+
+    <div class="market-info-grid">
+      {% if page.address and page.address != "" %}
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <span>{{ page.address }}</span>
+      </div>
+      {% elsif page.lat and page.lat != "" %}
+      <div class="info-item">
+        <span class="info-icon">📍</span>
+        <span>{{ page.city }} {{ page.dong }} (좌표 {{ page.lat }}, {{ page.lng }})</span>
+      </div>
+      {% endif %}
+      {% if page.lat and page.lat != "" %}
+      <div class="info-item">
+        <a href="https://map.kakao.com/link/map/{{ page.facilityName | url_encode }},{{ page.lat }},{{ page.lng }}" class="parking-btn">🗺️ 카카오맵으로 위치 보기</a>
+      </div>
+      {% endif %}
+      {% if page.phone and page.phone != "" %}
+      <div class="info-item">
+        <span class="info-icon">📞</span>
+        <a href="tel:{{ page.phone }}">{{ page.phone }}</a>
+      </div>
+      {% endif %}
+      {% if page.homepage and page.homepage != "" %}
+      <div class="info-item">
+        <span class="info-icon">🔗</span>
+        <a href="{{ page.homepage }}">{{ page.homepage }}</a>
+      </div>
+      {% endif %}
+    </div>
+
+    {% assign has_extra = false %}
+    {% if page.area != "" or page.capacity != "" or page.seatCnt != "" %}{% assign has_extra = true %}{% endif %}
+    {% if has_extra %}
+    <div class="market-facilities">
+      {% if page.area and page.area != "" %}<span class="facility-badge">📐 면적 {{ page.area }}㎡</span>{% endif %}
+      {% if page.capacity and page.capacity != "" and page.capacity != "0" %}<span class="facility-badge">👥 수용인원 {{ page.capacity }}명</span>{% endif %}
+      {% if page.seatCnt and page.seatCnt != "" and page.seatCnt != "0" %}<span class="facility-badge">💺 좌석수 {{ page.seatCnt }}석</span>{% endif %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- 광고 -->
+  <div class="ad-slot">{% include ad.html %}</div>
+
+  {% if page.mngOrg and page.mngOrg != "" %}
+  <div class="market-section">
+    <h2>🏛️ 관리 기관</h2>
+    <p class="market-description">{{ page.mngOrg }}{% if page.mngDept and page.mngDept != "" %} · {{ page.mngDept }}{% endif %}</p>
+  </div>
+  {% endif %}
+
+  <div class="market-tip">
+    <span class="tip-icon">ℹ️</span>
+    <div>
+      <strong>이용 안내</strong>
+      <p>이용요금·운영시간은 시설과 계절에 따라 다를 수 있으니, 방문 전 관리 기관에 직접 문의하는 것을 권장합니다.</p>
+    </div>
+  </div>
+
+  <!-- 같은 지역 다른 시설 -->
+  {% if page.same_region and page.same_region.size > 0 %}
+  <div class="market-section">
+    <h2>🗺️ {{ page.region }} 다른 공공체육시설</h2>
+    <div class="related-grid">
+      {% for s in page.same_region %}
+      <a href="/facility/{{ s.slug }}/" class="related-card">
+        <span class="related-icon">{{ s.typeIcon }}</span>
+        <span class="related-name">{{ s.name }}</span>
+        <span class="related-days">{{ s.city }} · {{ s.typeLabel }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    <a href="/region/{{ page.regionSlug }}/" class="view-all-link">{{ page.region }} 전체 보기 →</a>
+  </div>
+  {% endif %}
+
+  <!-- 같은 종목 다른 시설 -->
+  {% if page.same_type and page.same_type.size > 0 %}
+  <div class="ad-slot">{% include ad.html %}</div>
+  <div class="market-section">
+    <h2>{{ page.typeIcon }} 전국 {{ page.typeLabel }}</h2>
+    <div class="related-grid">
+      {% for s in page.same_type %}
+      <a href="/facility/{{ s.slug }}/" class="related-card">
+        <span class="related-icon">{{ page.typeIcon }}</span>
+        <span class="related-name">{{ s.name }}</span>
+        <span class="related-days">{{ s.region }} {{ s.city }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    <a href="/type/{{ page.typeSlug }}/" class="view-all-link">전국 {{ page.typeLabel }} 전체 보기 →</a>
+  </div>
+  {% endif %}
+
+  <!-- 최근 본 시설 -->
+  <div class="market-section" id="recentSection" style="display:none">
+    <h2>🕑 최근 본 시설</h2>
+    <div class="related-grid" id="recentGrid"></div>
+  </div>
+
+  <!-- 이전/다음 -->
+  {% if page.prev_spot and page.next_spot %}
+  <div class="market-prevnext">
+    <a href="/facility/{{ page.prev_spot.slug }}/" class="prevnext-btn prevnext-prev">
+      <span class="prevnext-label">◀ 이전 시설</span>
+      <span class="prevnext-name">{{ page.prev_spot.name }}</span>
+    </a>
+    <a href="/facility/{{ page.next_spot.slug }}/" class="prevnext-btn prevnext-next">
+      <span class="prevnext-label">다음 시설 ▶</span>
+      <span class="prevnext-name">{{ page.next_spot.name }}</span>
+    </a>
+  </div>
+  {% endif %}
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsActivityLocation",
+    "name": "{{ page.facilityName | escape }}",
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "{{ page.region | escape }}",
+      "addressLocality": "{{ page.city | escape }}",
+      "streetAddress": "{{ page.address | escape }}"
+    }{% if page.phone and page.phone != "" %},
+    "telephone": "{{ page.phone }}"{% endif %}{% if page.lat and page.lat != "" %},
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": {{ page.lat }},
+      "longitude": {{ page.lng }}
+    }{% endif %},
+    "description": "{{ page.description | escape }}"
+  }
+  </script>
+
+</div>
+<aside class="market-sidebar">
+  {% include ad.html slot="6255378195" label="사이드바" %}
+</aside>
+</div>
+
+<script>
+(() => {
+  const KEY = 'wooasports_recent';
+  const currentSlug = {{ page.slug | jsonify }};
+  const currentName = {{ page.facilityName | jsonify }};
+  let list = [];
+  try { list = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) {}
+
+  const others = list.filter(i => i.slug !== currentSlug);
+  if (others.length > 0) {
+    document.getElementById('recentGrid').innerHTML = others.slice(0, 8).map(i => `
+      <a href="/facility/${i.slug}/" class="related-card">
+        <span class="related-icon">🕑</span>
+        <span class="related-name">${i.name}</span>
+      </a>`).join('');
+    document.getElementById('recentSection').style.display = 'block';
+  }
+
+  const updated = [{ slug: currentSlug, name: currentName }, ...others].slice(0, 10);
+  try { localStorage.setItem(KEY, JSON.stringify(updated)); } catch (e) {}
+})();
+</script>

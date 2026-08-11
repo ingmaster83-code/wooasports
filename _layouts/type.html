@@ -1,0 +1,70 @@
+---
+layout: default
+---
+
+<div class="market-layout">
+<div class="list-page">
+
+  <nav class="breadcrumb">
+    <a href="/">홈</a>
+    <span>›</span>
+    <span>전국 {{ page.typeLabel }}</span>
+  </nav>
+
+  <div class="list-header">
+    <h1>{{ page.typeIcon }} 전국 {{ page.typeLabel }}</h1>
+    <p class="list-count">총 {{ page.facilities | size }}곳</p>
+  </div>
+
+  <div class="ad-slot">{% include ad.html %}</div>
+
+  <div class="market-list">
+    {% assign region_groups = page.facilities | group_by: 'region' %}
+    {% assign sorted_groups = region_groups | sort: "size" | reverse %}
+    {% assign item_counter = 0 %}
+    {% for group in sorted_groups %}
+    <div class="days-group">
+      <h2 class="days-group-title">
+        <span>🗺️ {{ group.name }}</span>
+        <span class="group-count">{{ group.items | size }}곳</span>
+      </h2>
+      <div class="market-cards">
+        {% for f in group.items %}
+        <a href="/facility/{{ f.slug }}/" class="market-card">
+          <div class="card-name">{{ f.name }}</div>
+          <div class="card-city">{{ f.city }} {{ f.dong }}</div>
+          {% if f.address and f.address != "" %}
+          <div class="card-address">📍 {{ f.address }}</div>
+          {% endif %}
+        </a>
+        {% assign item_counter = item_counter | plus: 1 %}
+        {% assign item_rem = item_counter | modulo: 24 %}
+        {% if item_rem == 0 %}
+      </div>
+      <div class="ad-slot">{% include ad.html %}</div>
+      <div class="market-cards">
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="region-nav">
+    <h3>다른 종목</h3>
+    <div class="region-btn-grid-sm">
+      {% assign all_types = site.data.facilities | map: 'ftype' | uniq | sort %}
+      {% for t in all_types %}
+      {% assign t_slug = site.data.facilities | where: 'ftype', t | first %}
+      {% if t != page.typeLabel %}
+      <a href="/type/{{ t_slug.typeSlug }}/" class="region-btn-sm">{{ t_slug.typeIcon }} {{ t }}</a>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+<aside class="market-sidebar">
+  {% include ad.html slot="6255378195" label="사이드바" %}
+</aside>
+</div>

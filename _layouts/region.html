@@ -1,0 +1,81 @@
+---
+layout: default
+---
+
+<div class="market-layout">
+<div class="list-page">
+
+  <nav class="breadcrumb">
+    <a href="/">홈</a>
+    <span>›</span>
+    <span>{{ page.region }} 공공체육시설</span>
+  </nav>
+
+  <div class="list-header">
+    <h1>🗺️ {{ page.region }} 공공체육시설</h1>
+    <p class="list-count">총 {{ page.facilities | size }}곳</p>
+  </div>
+
+  <div class="ad-slot">{% include ad.html %}</div>
+
+  <div class="city-subnav">
+    <h3>🏘️ 시/군/구별로 찾기</h3>
+    <div class="region-btn-grid-sm">
+      {% assign city_names = page.facilities | map: 'city' | uniq | sort %}
+      {% for c in city_names %}
+      {% assign c_count = page.facilities | where: 'city', c | size %}
+      <span class="region-btn-sm">{{ c }} <span class="count">{{ c_count }}</span></span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="market-list">
+    {% assign type_groups = page.facilities | group_by: 'ftype' %}
+    {% assign sorted_groups = type_groups | sort: "size" | reverse %}
+    {% assign item_counter = 0 %}
+    {% for group in sorted_groups %}
+    <div class="days-group">
+      <h2 class="days-group-title">
+        <span>{{ group.items.first.typeIcon }} {{ group.name }}</span>
+        <span class="group-count">{{ group.items | size }}곳</span>
+      </h2>
+      <div class="market-cards">
+        {% for f in group.items %}
+        <a href="/facility/{{ f.slug }}/" class="market-card">
+          <div class="card-name">{{ f.name }}</div>
+          <div class="card-city">{{ f.city }} {{ f.dong }}</div>
+          {% if f.address and f.address != "" %}
+          <div class="card-address">📍 {{ f.address }}</div>
+          {% endif %}
+        </a>
+        {% assign item_counter = item_counter | plus: 1 %}
+        {% assign item_rem = item_counter | modulo: 24 %}
+        {% if item_rem == 0 %}
+      </div>
+      <div class="ad-slot">{% include ad.html %}</div>
+      <div class="market-cards">
+        {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="region-nav">
+    <h3>다른 지역 공공체육시설</h3>
+    <div class="region-btn-grid-sm">
+      {% assign all_regions = site.data.facilities | map: 'region' | uniq | sort %}
+      {% for r in all_regions %}
+      {% assign r_slug = site.data.facilities | where: 'region', r | first %}
+      {% if r != page.region %}
+      <a href="/region/{{ r_slug.regionSlug }}/" class="region-btn-sm">{{ r }}</a>
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+<aside class="market-sidebar">
+  {% include ad.html slot="6255378195" label="사이드바" %}
+</aside>
+</div>

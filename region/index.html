@@ -1,0 +1,33 @@
+---
+layout: default
+title: 지역별 공공체육시설 찾기
+description: 전국 16개 지역별 공공체육시설 목록을 확인하세요.
+---
+
+<div class="home-layout">
+<div class="home-page">
+
+  <div class="home-hero">
+    <h1>🗺️ 지역별 공공체육시설</h1>
+    <p>전국 {{ site.data.facilities | size }}곳을 지역별로 찾아보세요</p>
+    <p style="margin-top:8px;"><a href="/type/">⚽ 종목별로 찾기 →</a></p>
+  </div>
+
+  <div class="home-section">
+    <div class="region-btn-grid">
+      {% assign regions_data = site.data.facilities | group_by: 'region' | sort: 'name' %}
+      {% for rg in regions_data %}
+      {% assign slug = rg.items.first.regionSlug %}
+      <a href="/region/{{ slug }}/" class="region-btn">
+        {{ rg.name }}
+        <span class="count">{{ rg.items | size }}곳</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+<aside class="home-sidebar">
+  {% include ad.html slot="6255378195" label="사이드바" %}
+</aside>
+</div>
