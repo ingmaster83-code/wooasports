@@ -70,6 +70,48 @@ layout: default
   <!-- 광고 -->
   <div class="ad-slot">{% include ad.html %}</div>
 
+  {% assign has_open_info = false %}
+  {% if page.weekdayOpen and page.weekdayOpen != "" or page.feeInfo and page.feeInfo != "" or page.closedDays and page.closedDays != "" %}{% assign has_open_info = true %}{% endif %}
+
+  {% if has_open_info %}
+  <div class="market-section">
+    <h2>🕑 이용 안내</h2>
+    <div class="market-info-grid">
+      {% if page.weekdayOpen and page.weekdayOpen != "" %}
+      <div class="info-item">
+        <span class="info-icon">📅</span>
+        <span>평일 {{ page.weekdayOpen }} ~ {{ page.weekdayClose }}{% if page.weekendOpen and page.weekendOpen != "" %} · 주말 {{ page.weekendOpen }} ~ {{ page.weekendClose }}{% endif %}</span>
+      </div>
+      {% endif %}
+      {% if page.closedDays and page.closedDays != "" %}
+      <div class="info-item">
+        <span class="info-icon">🚫</span>
+        <span>휴관일 {{ page.closedDays }}</span>
+      </div>
+      {% endif %}
+      {% if page.feeInfo and page.feeInfo != "" %}
+      <div class="info-item">
+        <span class="info-icon">💰</span>
+        <span>{{ page.feeInfo }}</span>
+      </div>
+      {% endif %}
+      {% if page.applicationMethod and page.applicationMethod != "" %}
+      <div class="info-item">
+        <span class="info-icon">📝</span>
+        <span>신청방법 {{ page.applicationMethod }}</span>
+      </div>
+      {% endif %}
+      {% if page.etcFacility and page.etcFacility != "" %}
+      <div class="info-item">
+        <span class="info-icon">🧰</span>
+        <span>부대시설 {{ page.etcFacility }}</span>
+      </div>
+      {% endif %}
+    </div>
+    <p class="market-source-note">※ 공공데이터포털 전국공공시설개방정보표준데이터 기준. 시설·계절에 따라 변동될 수 있어 방문 전 관리 기관 확인을 권장합니다.</p>
+  </div>
+  {% endif %}
+
   {% if page.mngOrg and page.mngOrg != "" %}
   <div class="market-section">
     <h2>🏛️ 관리 기관</h2>
@@ -77,6 +119,7 @@ layout: default
   </div>
   {% endif %}
 
+  {% unless has_open_info %}
   <div class="market-tip">
     <span class="tip-icon">ℹ️</span>
     <div>
@@ -84,6 +127,7 @@ layout: default
       <p>이용요금·운영시간은 시설과 계절에 따라 다를 수 있으니, 방문 전 관리 기관에 직접 문의하는 것을 권장합니다.</p>
     </div>
   </div>
+  {% endunless %}
 
   <!-- 같은 지역 다른 시설 -->
   {% if page.same_region and page.same_region.size > 0 %}

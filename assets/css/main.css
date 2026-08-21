@@ -227,6 +227,7 @@ img { max-width: 100%; }
 .market-info-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 .info-item { display: flex; gap: 8px; align-items: flex-start; font-size: .9rem; }
 .info-icon { flex-shrink: 0; }
+.market-source-note { font-size: .78rem; color: #9CA3AF; margin-top: 4px; }
 .parking-btn {
   display: inline-flex; align-items: center; gap: 6px;
   background: #1D4ED8; color: #fff; border-radius: 8px;
