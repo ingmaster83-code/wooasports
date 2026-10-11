@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import urllib.request, urllib.parse, json, time, os
 
-KEY = '9490b1d34e92aa9e25b32a4cff1438fc7b9c71e5d332413916a391e867f61e86'
+def _need_key():
+    import os, sys
+    return os.environ.get("DATA_GO_KR_API_KEY") or sys.exit("환경변수 DATA_GO_KR_API_KEY 가 필요합니다(키를 코드에 넣지 마세요).")
+
+
+KEY = _need_key()
 URL = 'https://apis.data.go.kr/B551014/SRVC_SFMS_FACIL_INFO/TODZ_SFMS_FACIL_INFO'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 NUM_ROWS = 1000
